@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>Lima Travel Planner</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #2c3e50; }
+    .planner { margin-top: 30px; }
+    input, button { padding: 8px; margin: 5px 0; }
+    #result { margin-top: 20px; font-weight: bold; color: #16a085; }
+  </style>
+</head>
+<body>
+
+  <h1>Lima Travel Planner</h1>
+
+  <!-- Markdown দেখানোর অংশ -->
+  <div id="markdownContent"></div>
+  <a href="Lima_Travel_Plan.md" download>Download Lima Travel Plan</a>
+
+  <!-- ইউজারের নতুন ইনপুট ফর্ম -->
+  <div class="planner">
+    <h2>নতুন ভ্রমণ পরিকল্পনা</h2>
+    <label>গন্তব্য: <input type="text" id="destination"></label><br>
+    <label>মোট দিন: <input type="number" id="days"></label><br>
+    <label>প্রতিদিনের খরচ: <input type="number" id="dailyCost" value="3000"></label><br>
+    <label>ভ্রমণের তারিখ: <input type="date" id="travelDate"></label><br>
+    <button onclick="calculateBudget()">হিসাব দেখাও</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Markdown ফাইল ওয়েবপেজে দেখানো
+    fetch('Lima_Travel_Plan.md')
+      .then(response => response.text())
+      .then(text => {
+        document.getElementById('markdownContent').innerHTML = marked(text);
+      });
+
+    // ইউজারের ইনপুট অনুযায়ী বাজেট হিসাব
+    function calculateBudget() {
+      const destination = document.getElementById('destination').value;
+      const days = parseInt(document.getElementById('days').value);
+      let dailyCost = parseInt(document.getElementById('dailyCost').value);
+      const travelDate = document.getElementById('travelDate').value;
+
+      if (!destination || !days || !travelDate) {
+        document.getElementById('result').innerText = "দয়া করে গন্তব্য, মোট দিন এবং তারিখ পূরণ করুন।";
+        return;
+      }
+
+      if (!dailyCost) dailyCost = 3000; // ডিফল্ট দৈনিক খরচ
+
+      const totalCost = days * dailyCost;
+
+      document.getElementById('result').innerHTML = `
+        <p>গন্তব্য: ${destination}</p>
+        <p>মোট দিন: ${days}</p>
+        <p>প্রতিদিনের খরচ: ${dailyCost} টাকা</p>
+        <p>মোট বাজেট: ${totalCost} টাকা</p>
+        <p>ভ্রমণের তারিখ: ${travelDate}</p>
+      `;
+    }
+  </script>
+
+</body>
+</html>
